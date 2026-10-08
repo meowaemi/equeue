@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -27,7 +28,7 @@ public class TicketController {
     private final TicketService ticketService;
 
     @GetMapping
-    public List<TicketResponse> getAll(@RequestParam(required = false) Long branchId,
+    public List<TicketResponse> getAll(@RequestParam(required = false) UUID branchId,
                                        @RequestParam(required = false) TicketStatus status) {
         if (branchId != null && status != null) {
             return ticketService.getAllByBranchAndStatus(branchId, status);
@@ -36,7 +37,7 @@ public class TicketController {
     }
 
     @GetMapping("/{id}")
-    public TicketResponse getById(@PathVariable Long id) {
+    public TicketResponse getById(@PathVariable UUID id) {
         return ticketService.getById(id);
     }
 
@@ -47,13 +48,13 @@ public class TicketController {
     }
 
     @PutMapping("/{id}")
-    public TicketResponse update(@PathVariable Long id, @Valid @RequestBody UpdateTicketRequest request) {
+    public TicketResponse update(@PathVariable UUID id, @Valid @RequestBody UpdateTicketRequest request) {
         return ticketService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         ticketService.delete(id);
     }
 }

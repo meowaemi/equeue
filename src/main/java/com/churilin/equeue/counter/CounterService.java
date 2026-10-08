@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class CounterService {
     private final BranchRepository branchRepository;
     private final ServiceTypeRepository serviceTypeRepository;
 
-    public CounterResponse create(Long branchId, CreateCounterRequest request) {
+    public CounterResponse create(UUID branchId, CreateCounterRequest request) {
         Branch branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new EntityNotFoundException("Branch " + branchId + " not found"));
         Set<ServiceType> serviceTypes = findServiceTypes(branchId, request.serviceTypeIds());
@@ -34,18 +35,18 @@ public class CounterService {
     }
 
     @Transactional(readOnly = true)
-    public CounterResponse getById(Long branchId, Long id) {
+    public CounterResponse getById(UUID branchId, UUID id) {
         return CounterResponse.from(findCounter(branchId, id));
     }
 
     @Transactional(readOnly = true)
-    public List<CounterResponse> getAllByBranch(Long branchId) {
+    public List<CounterResponse> getAllByBranch(UUID branchId) {
         return counterRepository.findAllByBranchId(branchId).stream()
                 .map(CounterResponse::from)
                 .toList();
     }
 
-    public CounterResponse update(Long branchId, Long id, UpdateCounterRequest request) {
+    public CounterResponse update(UUID branchId, UUID id, UpdateCounterRequest request) {
         Counter counter = findCounter(branchId, id);
         counter.setNumber(request.number());
         counter.setStatus(request.status());
@@ -53,20 +54,20 @@ public class CounterService {
         return CounterResponse.from(counter);
     }
 
-    public void delete(Long branchId, Long id) {
+    public void delete(UUID branchId, UUID id) {
         counterRepository.delete(findCounter(branchId, id));
     }
 
-    private Counter findCounter(Long branchId, Long id) {
+    private Counter findCounter(UUID branchId, UUID id) {
         return counterRepository.findById(id)
                 .filter(counter -> counter.getBranch().getId().equals(branchId))
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Counter " + id + " not found in branch " + branchId));
     }
 
-    private Set<ServiceType> findServiceTypes(Long branchId, Set<Long> ids) {
+    private Set<ServiceType> findServiceTypes(UUID branchId, Set<UUID> ids) {
         Set<ServiceType> serviceTypes = new HashSet<>(serviceTypeRepository.findAllById(ids));
-        for (Long id : ids) {
+        for (UUID id : ids) {
             boolean found = serviceTypes.stream()
                     .anyMatch(st -> st.getId().equals(id) && st.getBranch().getId().equals(branchId));
             if (!found) {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +24,7 @@ public class BranchService {
     }
 
     @Transactional(readOnly = true)
-    public BranchResponse getById(Long id) {
+    public BranchResponse getById(UUID id) {
         return BranchResponse.from(findBranch(id));
     }
 
@@ -34,18 +35,18 @@ public class BranchService {
                 .toList();
     }
 
-    public BranchResponse update(Long id, UpdateBranchRequest request) {
+    public BranchResponse update(UUID id, UpdateBranchRequest request) {
         Branch branch = findBranch(id);
         branch.setName(request.name());
         branch.setAddress(request.address());
         return BranchResponse.from(branch);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         branchRepository.delete(findBranch(id));
     }
 
-    private Branch findBranch(Long id) {
+    private Branch findBranch(UUID id) {
         return branchRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Branch " + id + " not found"));
     }

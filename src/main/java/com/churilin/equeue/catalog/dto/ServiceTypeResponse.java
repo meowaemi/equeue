@@ -2,9 +2,11 @@ package com.churilin.equeue.catalog.dto;
 
 import com.churilin.equeue.catalog.ServiceType;
 
+import java.util.UUID;
+
 public record ServiceTypeResponse(
-        Long id,
-        Long branchId,
+        UUID id,
+        UUID branchId,
         String name,
         String prefix,
         Integer avgServiceMinutes,

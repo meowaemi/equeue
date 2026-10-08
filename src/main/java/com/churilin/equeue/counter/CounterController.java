@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/branches/{branchId}/counters")
@@ -26,31 +27,31 @@ public class CounterController {
     private final CounterService counterService;
 
     @GetMapping
-    public List<CounterResponse> getAll(@PathVariable Long branchId) {
+    public List<CounterResponse> getAll(@PathVariable UUID branchId) {
         return counterService.getAllByBranch(branchId);
     }
 
     @GetMapping("/{id}")
-    public CounterResponse getById(@PathVariable Long branchId, @PathVariable Long id) {
+    public CounterResponse getById(@PathVariable UUID branchId, @PathVariable UUID id) {
         return counterService.getById(branchId, id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CounterResponse create(@PathVariable Long branchId,
+    public CounterResponse create(@PathVariable UUID branchId,
                                   @Valid @RequestBody CreateCounterRequest request) {
         return counterService.create(branchId, request);
     }
 
     @PutMapping("/{id}")
-    public CounterResponse update(@PathVariable Long branchId, @PathVariable Long id,
+    public CounterResponse update(@PathVariable UUID branchId, @PathVariable UUID id,
                                   @Valid @RequestBody UpdateCounterRequest request) {
         return counterService.update(branchId, id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long branchId, @PathVariable Long id) {
+    public void delete(@PathVariable UUID branchId, @PathVariable UUID id) {
         counterService.delete(branchId, id);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class ServiceTypeService {
     private final ServiceTypeRepository serviceTypeRepository;
     private final BranchRepository branchRepository;
 
-    public ServiceTypeResponse create(Long branchId, CreateServiceTypeRequest request) {
+    public ServiceTypeResponse create(UUID branchId, CreateServiceTypeRequest request) {
         Branch branch = branchRepository.findById(branchId)
                 .orElseThrow(() -> new EntityNotFoundException("Branch " + branchId + " not found"));
         ServiceType serviceType = new ServiceType(branch, request.name(), request.prefix(), request.avgServiceMinutes());
@@ -28,18 +29,18 @@ public class ServiceTypeService {
     }
 
     @Transactional(readOnly = true)
-    public ServiceTypeResponse getById(Long branchId, Long id) {
+    public ServiceTypeResponse getById(UUID branchId, UUID id) {
         return ServiceTypeResponse.from(findServiceType(branchId, id));
     }
 
     @Transactional(readOnly = true)
-    public List<ServiceTypeResponse> getAllByBranch(Long branchId) {
+    public List<ServiceTypeResponse> getAllByBranch(UUID branchId) {
         return serviceTypeRepository.findAllByBranchIdAndActiveTrue(branchId).stream()
                 .map(ServiceTypeResponse::from)
                 .toList();
     }
 
-    public ServiceTypeResponse update(Long branchId, Long id, UpdateServiceTypeRequest request) {
+    public ServiceTypeResponse update(UUID branchId, UUID id, UpdateServiceTypeRequest request) {
         ServiceType serviceType = findServiceType(branchId, id);
         serviceType.setName(request.name());
         serviceType.setPrefix(request.prefix());
@@ -48,11 +49,11 @@ public class ServiceTypeService {
         return ServiceTypeResponse.from(serviceType);
     }
 
-    public void delete(Long branchId, Long id) {
+    public void delete(UUID branchId, UUID id) {
         serviceTypeRepository.delete(findServiceType(branchId, id));
     }
 
-    private ServiceType findServiceType(Long branchId, Long id) {
+    private ServiceType findServiceType(UUID branchId, UUID id) {
         return serviceTypeRepository.findById(id)
                 .filter(serviceType -> serviceType.getBranch().getId().equals(branchId))
                 .orElseThrow(() -> new EntityNotFoundException(

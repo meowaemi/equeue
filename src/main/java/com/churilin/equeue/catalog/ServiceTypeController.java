@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/branches/{branchId}/services")
@@ -26,31 +27,31 @@ public class ServiceTypeController {
     private final ServiceTypeService serviceTypeService;
 
     @GetMapping
-    public List<ServiceTypeResponse> getAll(@PathVariable Long branchId) {
+    public List<ServiceTypeResponse> getAll(@PathVariable UUID branchId) {
         return serviceTypeService.getAllByBranch(branchId);
     }
 
     @GetMapping("/{id}")
-    public ServiceTypeResponse getById(@PathVariable Long branchId, @PathVariable Long id) {
+    public ServiceTypeResponse getById(@PathVariable UUID branchId, @PathVariable UUID id) {
         return serviceTypeService.getById(branchId, id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ServiceTypeResponse create(@PathVariable Long branchId,
+    public ServiceTypeResponse create(@PathVariable UUID branchId,
                                       @Valid @RequestBody CreateServiceTypeRequest request) {
         return serviceTypeService.create(branchId, request);
     }
 
     @PutMapping("/{id}")
-    public ServiceTypeResponse update(@PathVariable Long branchId, @PathVariable Long id,
+    public ServiceTypeResponse update(@PathVariable UUID branchId, @PathVariable UUID id,
                                       @Valid @RequestBody UpdateServiceTypeRequest request) {
         return serviceTypeService.update(branchId, id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long branchId, @PathVariable Long id) {
+    public void delete(@PathVariable UUID branchId, @PathVariable UUID id) {
         serviceTypeService.delete(branchId, id);
     }
 }

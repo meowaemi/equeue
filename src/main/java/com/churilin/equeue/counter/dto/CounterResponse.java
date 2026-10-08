@@ -5,13 +5,14 @@ import com.churilin.equeue.counter.Counter;
 import com.churilin.equeue.counter.CounterStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 public record CounterResponse(
-        Long id,
-        Long branchId,
+        UUID id,
+        UUID branchId,
         Integer number,
         CounterStatus status,
-        List<Long> serviceTypeIds
+        List<UUID> serviceTypeIds
 ) {
     public static CounterResponse from(Counter counter) {
         return new CounterResponse(

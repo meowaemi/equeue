@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class TicketService {
     }
 
     @Transactional(readOnly = true)
-    public TicketResponse getById(Long id) {
+    public TicketResponse getById(UUID id) {
         return TicketResponse.from(findTicket(id));
     }
 
@@ -50,13 +51,13 @@ public class TicketService {
     }
 
     @Transactional(readOnly = true)
-    public List<TicketResponse> getAllByBranchAndStatus(Long branchId, TicketStatus status) {
+    public List<TicketResponse> getAllByBranchAndStatus(UUID branchId, TicketStatus status) {
         return ticketRepository.findAllByBranchIdAndStatus(branchId, status).stream()
                 .map(TicketResponse::from)
                 .toList();
     }
 
-    public TicketResponse update(Long id, UpdateTicketRequest request) {
+    public TicketResponse update(UUID id, UpdateTicketRequest request) {
         Ticket ticket = findTicket(id);
         ticket.setStatus(request.status());
         ticket.setPriority(request.priority());
@@ -67,16 +68,16 @@ public class TicketService {
         return TicketResponse.from(ticket);
     }
 
-    public void delete(Long id) {
+    public void delete(UUID id) {
         ticketRepository.delete(findTicket(id));
     }
 
-    private Ticket findTicket(Long id) {
+    private Ticket findTicket(UUID id) {
         return ticketRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Ticket " + id + " not found"));
     }
 
-    private Counter findCounter(Long branchId, Long counterId) {
+    private Counter findCounter(UUID branchId, UUID counterId) {
         return counterRepository.findById(counterId)
                 .filter(counter -> counter.getBranch().getId().equals(branchId))
                 .orElseThrow(() -> new EntityNotFoundException(

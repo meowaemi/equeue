@@ -4,15 +4,16 @@ import com.churilin.equeue.ticket.Ticket;
 import com.churilin.equeue.ticket.TicketStatus;
 
 import java.time.Instant;
+import java.util.UUID;
 
 public record TicketResponse(
-        Long id,
-        Long branchId,
-        Long serviceTypeId,
+        UUID id,
+        UUID branchId,
+        UUID serviceTypeId,
         String number,
         TicketStatus status,
         Integer priority,
-        Long counterId,
+        UUID counterId,
         Instant createdAt,
         Instant calledAt,
         Instant startedAt,
